@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+    <title>Hardware Setup Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Toolbar -->
+        <div id="toolbar">
+            <div class="toolbar-group">
+                <button id="btn-new" class="toolbar-btn" title="New Project (Ctrl+N)">
+                    <span class="icon">📄</span>
+                    New
+                </button>
+                <button id="btn-open" class="toolbar-btn" title="Open Project (Ctrl+O)">
+                    <span class="icon">📁</span>
+                    Open
+                </button>
+                <button id="btn-save" class="toolbar-btn" title="Save Project (Ctrl+S)">
+                    <span class="icon">💾</span>
+                    Save
+                </button>
+            </div>
+            
+            <div class="toolbar-separator"></div>
+            
+            <div class="toolbar-group">
+                <button id="btn-export" class="toolbar-btn" title="Export as Image (Ctrl+E)">
+                    <span class="icon">🖼️</span>
+                    Export
+                </button>
+            </div>
+            
+            <div class="toolbar-separator"></div>
+            
+            <div class="toolbar-group">
+                <button id="btn-zoom-in" class="toolbar-btn" title="Zoom In">
+                    <span class="icon">🔍+</span>
+                </button>
+                <button id="btn-zoom-out" class="toolbar-btn" title="Zoom Out">
+                    <span class="icon">🔍-</span>
+                </button>
+                <button id="btn-zoom-fit" class="toolbar-btn" title="Fit to Window">
+                    <span class="icon">⏹️</span>
+                </button>
+            </div>
+
+            <div class="toolbar-spacer"></div>
+            
+            <div id="status-bar">
+                <span id="status-text">Ready</span>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div id="main-content">
+            <!-- Component Library Panel -->
+            <div id="component-panel">
+                <div class="panel-header">
+                    <h3>Components</h3>
+                </div>
+                
+                <div class="panel-content">
+                    <!-- Computer Components -->
+                    <div class="component-category">
+                        <div class="category-header">
+                            <span class="category-icon">🖥️</span>
+                            <span class="category-title">Computers</span>
+                        </div>
+                        <div class="category-items">
+                            <div class="component-item" data-component="desktop-pc">
+                                <div class="component-icon">
+                                    <svg width="40" height="40" viewBox="0 0 100 100">
+                                        <rect x="10" y="20" width="60" height="45" fill="#333" stroke="#666" stroke-width="2" rx="3"/>
+                                        <rect x="15" y="25" width="50" height="30" fill="#000"/>
+                                        <rect x="25" y="70" width="30" height="15" fill="#666" stroke="#333" stroke-width="1"/>
+                                        <circle cx="40" cy="77" r="2" fill="#00ff00"/>
+                                    </svg>
+                                </div>
+                                <span class="component-label">Desktop PC</span>
+                            </div>
+                            
+                            <div class="component-item" data-component="laptop">
+                                <div class="component-icon">
+                                    <svg width="40" height="40" viewBox="0 0 100 100">
+                                        <rect x="15" y="35" width="70" height="35" fill="#333" stroke="#666" stroke-width="2" rx="3"/>
+                                        <rect x="20" y="40" width="60" height="25" fill="#000"/>
+                                        <rect x="10" y="70" width="80" height="8" fill="#666" stroke="#333" stroke-width="1" rx="2"/>
+                                    </svg>
+                                </div>
+                                <span class="component-label">Laptop</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Measurement Equipment -->
+                    <div class="component-category">
+                        <div class="category-header">
+                            <span class="category-icon">📊</span>
+                            <span class="category-title">Measurement</span>
+                        </div>
+                        <div class="category-items">
+                            <div class="component-item" data-component="oscilloscope">
+                                <div class="component-icon">
+                                    <svg width="40" height="40" viewBox="0 0 100 100">
+                                        <rect x="10" y="20" width="80" height="60" fill="#1e1e1e" stroke="#666" stroke-width="2" rx="5"/>
+                                        <rect x="20" y="30" width="40" height="30" fill="#003300" stroke="#00ff00" stroke-width="1"/>
+                                        <polyline points="25,45 35,35 45,55 55,40" fill="none" stroke="#00ff00" stroke-width="2"/>
+                                        <circle cx="75" cy="40" r="6" fill="#333" stroke="#666"/>
+                                        <circle cx="75" cy="55" r="6" fill="#333" stroke="#666"/>
+                                    </svg>
+                                </div>
+                                <span class="component-label">Oscilloscope</span>
+                            </div>
+                            
+                            <div class="component-item" data-component="multimeter">
+                                <div class="component-icon">
+                                    <svg width="40" height="40" viewBox="0 0 100 100">
+                                        <rect x="25" y="15" width="50" height="70" fill="#ffff00" stroke="#333" stroke-width="2" rx="8"/>
+                                        <rect x="30" y="25" width="40" height="20" fill="#000"/>
+                                        <text x="50" y="38" text-anchor="middle" fill="#00ff00" font-size="8" font-family="monospace">12.34</text>
+                                        <circle cx="40" cy="55" r="8" fill="none" stroke="#333" stroke-width="2"/>
+                                        <line x1="35" y1="60" x2="45" y2="50" stroke="#333" stroke-width="2"/>
+                                    </svg>
+                                </div>
+                                <span class="component-label">Multimeter</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Power Supply -->
+                    <div class="component-category">
+                        <div class="category-header">
+                            <span class="category-icon">🔌</span>
+                            <span class="category-title">Power</span>
+                        </div>
+                        <div class="category-items">
+                            <div class="component-item" data-component="power-supply">
+                                <div class="component-icon">
+                                    <svg width="40" height="40" viewBox="0 0 100 100">
+                                        <rect x="15" y="25" width="70" height="50" fill="#666" stroke="#333" stroke-width="2" rx="3"/>
+                                        <rect x="20" y="35" width="25" height="15" fill="#000" stroke="#666"/>
+                                        <text x="32" y="45" text-anchor="middle" fill="#ff0000" font-size="8">24V</text>
+                                        <circle cx="60" cy="42" r="4" fill="#ff0000"/>
+                                        <circle cx="75" cy="42" r="4" fill="#000"/>
+                                        <text x="60" y="58" text-anchor="middle" fill="#fff" font-size="6">+</text>
+                                        <text x="75" y="58" text-anchor="middle" fill="#fff" font-size="6">-</text>
+                                    </svg>
+                                </div>
+                                <span class="component-label">Power Supply</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Embedded Devices -->
+                    <div class="component-category">
+                        <div class="category-header">
+                            <span class="category-icon">🔧</span>
+                            <span class="category-title">Embedded</span>
+                        </div>
+                        <div class="category-items">
+                            <div class="component-item" data-component="microcontroller">
+                                <div class="component-icon">
+                                    <svg width="40" height="40" viewBox="0 0 100 100">
+                                        <rect x="20" y="20" width="60" height="60" fill="#0066cc" stroke="#004499" stroke-width="2" rx="3"/>
+                                        <circle cx="35" cy="35" r="3" fill="#fff"/>
+                                        <circle cx="65" cy="35" r="3" fill="#fff"/>
+                                        <circle cx="35" cy="65" r="3" fill="#fff"/>
+                                        <circle cx="65" cy="65" r="3" fill="#fff"/>
+                                        <rect x="45" y="45" width="10" height="10" fill="#333"/>
+                                        <!-- Pins -->
+                                        <rect x="15" y="32" width="5" height="3" fill="#ffff00"/>
+                                        <rect x="15" y="47" width="5" height="3" fill="#ffff00"/>
+                                        <rect x="15" y="62" width="5" height="3" fill="#ffff00"/>
+                                        <rect x="80" y="32" width="5" height="3" fill="#ffff00"/>
+                                        <rect x="80" y="47" width="5" height="3" fill="#ffff00"/>
+                                        <rect x="80" y="62" width="5" height="3" fill="#ffff00"/>
+                                    </svg>
+                                </div>
+                                <span class="component-label">MCU Board</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Canvas Area -->
+            <div id="canvas-container">
+                <div id="canvas-header">
+                    <div id="canvas-tools">
+                        <button id="btn-select" class="canvas-tool active" title="Select Tool">
+                            <span class="icon">👆</span>
+                        </button>
+                        <button id="btn-cable" class="canvas-tool" title="Cable Tool">
+                            <span class="icon">🔗</span>
+                        </button>
+                        <button id="btn-delete" class="canvas-tool" title="Delete Selected">
+                            <span class="icon">🗑️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="canvas-viewport">
+                    <svg id="canvas" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Grid Background -->
+                        <defs>
+                            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#grid)" />
+                        
+                        <!-- Canvas content will be added here dynamically -->
+                        <g id="canvas-content"></g>
+                        <g id="cables-layer"></g>
+                        <g id="components-layer"></g>
+                        <g id="selection-layer"></g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Properties Panel (Initially Hidden) -->
+    <div id="properties-panel" class="hidden">
+        <div class="panel-header">
+            <h3>Properties</h3>
+            <button id="btn-close-properties">×</button>
+        </div>
+        <div class="panel-content">
+            <div id="properties-content">
+                <!-- Properties will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
