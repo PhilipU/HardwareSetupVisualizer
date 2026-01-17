@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <title>Hardware Setup Visualizer</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">Hardware Setup Visualizer</h1>
+                <div class="header-controls">
+                    <button id="new-btn" class="btn btn-primary">New</button>
+                    <button id="open-btn" class="btn btn-secondary">Open</button>
+                    <button id="save-btn" class="btn btn-secondary">Save</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <h3>Components</h3>
+                    <div class="component-list">
+                        <div class="component-item" draggable="true" data-component="cpu">
+                            <div class="component-icon">🖥️</div>
+                            <span>CPU</span>
+                        </div>
+                        <div class="component-item" draggable="true" data-component="ram">
+                            <div class="component-icon">💾</div>
+                            <span>RAM</span>
+                        </div>
+                        <div class="component-item" draggable="true" data-component="gpu">
+                            <div class="component-icon">🎮</div>
+                            <span>GPU</span>
+                        </div>
+                        <div class="component-item" draggable="true" data-component="storage">
+                            <div class="component-icon">💽</div>
+                            <span>Storage</span>
+                        </div>
+                        <div class="component-item" draggable="true" data-component="motherboard">
+                            <div class="component-icon">🔌</div>
+                            <span>Motherboard</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Properties</h3>
+                    <div class="properties-panel" id="properties-panel">
+                        <p class="no-selection">Select a component to view properties</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="workspace">
+                <div class="workspace-header">
+                    <h2>Hardware Setup</h2>
+                    <div class="workspace-tools">
+                        <button id="clear-workspace" class="btn btn-danger">Clear</button>
+                        <button id="export-btn" class="btn btn-success">Export</button>
+                    </div>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="main-canvas" width="800" height="600"></canvas>
+                </div>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <div class="footer-content">
+                <span class="status-text">Ready</span>
+                <span class="app-info" id="app-info"></span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal for About dialog -->
+    <div id="about-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>About Hardware Setup Visualizer</h2>
+            <p>A desktop application for visualizing and designing hardware setups.</p>
+            <p>Version: <span id="app-version"></span></p>
+            <p>Built with Electron</p>
+        </div>
+    </div>
+
+    <script src="js/renderer.js"></script>
+</body>
+</html>
