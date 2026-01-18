@@ -5,8 +5,11 @@
   "main": "dist/main.js",
   "homepage": "./",
   "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch",
+    "build": "npm run build:main && npm run build:renderer && npm run copy:renderer",
+    "build:main": "tsc",
+    "build:renderer": "tsc -p tsconfig.renderer.json",
+    "copy:renderer": "node -e \"const fs=require('fs'),path=require('path'); fs.mkdirSync('dist/renderer',{recursive:true}); fs.copyFileSync('src/renderer/index.html','dist/renderer/index.html'); fs.copyFileSync('src/renderer/styles.css','dist/renderer/styles.css'); try{fs.cpSync('src/renderer/assets','dist/renderer/assets',{recursive:true})}catch(e){}\"",
+    "build:watch": "concurrently \"tsc --watch\" \"tsc -p tsconfig.renderer.json --watch\"",
     "start": "npm run build && electron .",
     "dev": "concurrently \"npm run build:watch\" \"wait-on dist/main.js && electron .\"",
     "test": "jest",

@@ -52,7 +52,7 @@ class HardwareVisualizerApp {
     });
 
     // Load the renderer
-    this.mainWindow.loadFile(path.join(__dirname, '../src/renderer/index.html'));
+    this.mainWindow.loadFile(path.join(__dirname, 'renderer/index.html'));
 
     // Show window when ready
     this.mainWindow.once('ready-to-show', () => {
