@@ -2,6 +2,8 @@
 
 A professional web-based tool for visualizing FL3X automotive electronics test setups and component connections with advanced interaction features.
 
+![FL3X Hardware Setup Visualizer](docs/screenshot_01.png)
+
 ## Features
 
 ### **Core Functionality**
