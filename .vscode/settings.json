@@ -1,0 +1,35 @@
+/*
+{
+  "VsCodeTaskButtons.tasks": [
+    {
+      "label": "$(alert) Deploy to Production",
+      "task": "deploy-prod",
+      "color": "error"
+    },
+    {
+      "label": "$(warning) Run Integration Tests",
+      "task": "test-integration",
+      "color": "warning"
+    }
+  ]
+}
+
+{
+  "label": "Label that appears in the taskbar",
+  "alignment": "The alignment of the button in the taskbar. Options: left and right. Default: left",
+  "task": "The vscode task to execute. Must be absent when using 'tasks'",
+  "tasks": "List of tasks to show in the Quick Pick Menu",
+  "tooltip": "Optional tooltip to show when hovering over the button (defaults to task name)",
+  "description": "A description of the task when viewing the task list in the Quick Pick Menu",
+  "color": "Optional color for the button. Options: default, error (red), warning (yellow). Default: default"
+}
+*/
+{
+    "VsCodeTaskButtons.tasks": [
+        {
+            "label": "Start Web Server",
+            "task": "Start Web Server",
+            "color": "default"
+        }
+    ]
+}

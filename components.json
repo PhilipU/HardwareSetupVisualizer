@@ -1,0 +1,71 @@
+{
+    "components": [
+        {
+            "id": "power_supply",
+            "name": "Power Supply",
+            "icon": "PSU",
+            "color": "#34495e",
+            "description": "Power Supply Unit",
+            "svg": "svg/power-supply.svg",
+            "connectionPoints": [
+                { "x": 60, "y": 90, "side": "bottom", "type": "power", "name": "DC Out" }
+            ]
+        },
+        {
+            "id": "oscilloscope",
+            "name": "Oscilloscope",
+            "icon": "OSC",
+            "color": "#2ecc71",
+            "description": "Oscilloscope Measurement Device",
+            "svg": "svg/oscilloscope.svg",
+            "connectionPoints": [
+                { "x": 0, "y": 30, "side": "left", "type": "input", "name": "CH1" },
+                { "x": 0, "y": 60, "side": "left", "type": "input", "name": "CH2" }
+            ]
+        },
+        {
+            "id": "multimeter",
+            "name": "Multimeter",
+            "icon": "MM",
+            "color": "#e74c3c",
+            "description": "Digital Multimeter",
+            "svg": "svg/multimeter.svg",
+            "connectionPoints": [
+                { "x": 0, "y": 45, "side": "left", "type": "input", "name": "COM" },
+                { "x": 60, "y": 90, "side": "bottom", "type": "input", "name": "V/A" }
+            ]
+        },
+        {
+            "id": "fl3x_media",
+            "name": "FL3X Media 100BASE-T1",
+            "icon": "FL3X",
+            "color": "#3498db",
+            "description": "FL3X Media 100BASE-T1 Device",
+            "svg": "svg/fl3x-media.svg",
+            "connectionPoints": [
+                { "x": 0, "y": 45, "side": "left", "type": "data", "name": "T1" },
+                { "x": 120, "y": 45, "side": "right", "type": "data", "name": "TX" },
+                { "x": 60, "y": 0, "side": "top", "type": "power", "name": "PWR" }
+            ]
+        },
+        {
+            "id": "fl3x_device",
+            "name": "FL3X Device-L² Gen 3",
+            "icon": "FL3D",
+            "color": "#9b59b6",
+            "description": "FL3X Device-L² Gen 3 Vehicle ECU with multiple I/O interfaces",
+            "svg": "svg/fl3x-device.svg",
+            "connectionPoints": [
+                { "x": 0, "y": 20, "side": "left", "type": "power", "name": "PWR" },
+                { "x": 0, "y": 35, "side": "left", "type": "ethernet", "name": "ETH" },
+                { "x": 0, "y": 50, "side": "left", "type": "digital", "name": "DIO" },
+                { "x": 0, "y": 65, "side": "left", "type": "analog", "name": "AIN" },
+                { "x": 120, "y": 15, "side": "right", "type": "data", "name": "CON1" },
+                { "x": 120, "y": 27, "side": "right", "type": "data", "name": "CON2" },
+                { "x": 120, "y": 39, "side": "right", "type": "data", "name": "CON3" },
+                { "x": 120, "y": 51, "side": "right", "type": "data", "name": "CON4" },
+                { "x": 120, "y": 63, "side": "right", "type": "data", "name": "CON5" }
+            ]
+        }
+    ]
+}

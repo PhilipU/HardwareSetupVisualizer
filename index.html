@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardware Setup Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Component Toolbox -->
+        <div class="toolbox">
+            <h3>Components</h3>
+            <div class="component-list" id="componentList">
+                <!-- Components will be loaded here -->
+            </div>
+            <div class="controls">
+                <div class="toggle-control">
+                    <label for="showLabels">
+                        <input type="checkbox" id="showLabels" checked>
+                        <span>Show Labels</span>
+                    </label>
+                </div>
+                <button id="clearCanvas">Clear All</button>
+                <button id="saveSetup">Save Setup</button>
+                <button id="loadSetup">Load Setup</button>
+                <input type="file" id="fileInput" accept=".json" style="display: none;">
+            </div>
+        </div>
+
+        <!-- Canvas Area -->
+        <div class="canvas-container">
+            <canvas id="setupCanvas"></canvas>
+            
+            <!-- Component Context Menu -->
+            <div id="componentContextMenu" class="context-menu" style="display: none;">
+                <div class="menu-item" id="mirrorComponent">
+                    <span>🔄 Mirror</span>
+                </div>
+            </div>
+            
+            <div class="canvas-info">
+                <p><strong>Usage:</strong> Drag components from toolbox • Click connection points to create wires • Click wires to select • Double-click or press Delete to remove selected wire</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
