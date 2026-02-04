@@ -1,6 +1,6 @@
 # Hardware Setup Visualizer
 
-A web-based tool for visualizing FL3X automotive electronics test setups and component connections.
+A web-based tool for visualizing hardware test setups.
 
 ![FL3X Hardware Setup Visualizer](docs/screenshot_01.png)
 
