@@ -914,11 +914,28 @@ class HardwareSetupVisualizer {
     handleWheel(e) {
         e.preventDefault();
         
+        // Get mouse position relative to canvas
+        const rect = this.canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        
+        // Convert mouse position to world coordinates (before zoom)
+        const worldX = mouseX / this.zoomLevel - this.panX;
+        const worldY = mouseY / this.zoomLevel - this.panY;
+        
         const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
         const newZoom = this.zoomLevel * zoomFactor;
         
         // Clamp zoom level
-        this.zoomLevel = Math.max(this.minZoom, Math.min(this.maxZoom, newZoom));
+        const clampedZoom = Math.max(this.minZoom, Math.min(this.maxZoom, newZoom));
+        
+        // Only adjust pan if zoom actually changed
+        if (clampedZoom !== this.zoomLevel) {
+            // Calculate new pan to keep the world point under the mouse
+            this.panX = mouseX / clampedZoom - worldX;
+            this.panY = mouseY / clampedZoom - worldY;
+            this.zoomLevel = clampedZoom;
+        }
         
         this.renderCanvas();
     }
