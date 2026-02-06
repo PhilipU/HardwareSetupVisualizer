@@ -22,6 +22,11 @@ class HardwareSetupVisualizer {
         this.selectedForMenu = null;
         this.contextMenu = null;
         this.cursorPos = { x: 0, y: 0 };
+        // Touch event properties
+        this.isPinching = false;
+        this.lastPinchDistance = 0;
+        this.lastZoomLevel = 1.0;
+        this.pinchUpdateTimeout = null;
         
         this.setupCanvas();
         this.init();
@@ -245,6 +250,11 @@ class HardwareSetupVisualizer {
             this.handleClick(e); // Handle as right-click
         });
         this.canvas.addEventListener('wheel', (e) => this.handleWheel(e));
+
+        // Touch events for mobile support
+        this.canvas.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: false });
+        this.canvas.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
+        this.canvas.addEventListener('touchend', (e) => this.handleTouchEnd(e), { passive: false });
 
         // Keyboard events for wire deletion
         document.addEventListener('keydown', (e) => this.handleKeyDown(e));
@@ -622,6 +632,121 @@ class HardwareSetupVisualizer {
             this.selectedWire = null;
             this.renderCanvas();
         }
+    }
+
+    // Touch event handlers for mobile support
+    handleTouchStart(e) {
+        // Allow default behavior for single-finger scrolling on non-canvas elements
+        if (e.target !== this.canvas) {
+            return;
+        }
+        
+        e.preventDefault(); // Prevent default touch behavior only on canvas
+        
+        if (e.touches.length === 1) {
+            // Single touch - treat as mouse down
+            const touch = e.touches[0];
+            const mouseEvent = this.touchToMouseEvent(touch);
+            this.handleMouseDown(mouseEvent);
+        } else if (e.touches.length === 2) {
+            // Two-finger touch - prepare for pinch zoom
+            this.isPinching = true;
+            this.lastPinchDistance = this.getPinchDistance(e.touches[0], e.touches[1]);
+            this.lastZoomLevel = this.zoomLevel;
+            this.pinchUpdateTimeout = null;
+        }
+    }
+
+    handleTouchMove(e) {
+        // Allow default behavior for single-finger scrolling on non-canvas elements
+        if (e.target !== this.canvas) {
+            return;
+        }
+        
+        e.preventDefault(); // Prevent default touch behavior only on canvas
+        
+        if (e.touches.length === 1 && !this.isPinching) {
+            // Single touch - treat as mouse move
+            const touch = e.touches[0];
+            const mouseEvent = this.touchToMouseEvent(touch);
+            this.handleMouseMove(mouseEvent);
+        } else if (e.touches.length === 2 && this.isPinching) {
+            // Two-finger touch - handle pinch zoom with throttling
+            const currentDistance = this.getPinchDistance(e.touches[0], e.touches[1]);
+            
+            // Guard against division by zero
+            if (this.lastPinchDistance === 0 || currentDistance === 0) {
+                return;
+            }
+            
+            const scaleFactor = currentDistance / this.lastPinchDistance;
+            
+            // Apply zoom with limits
+            const newZoom = this.lastZoomLevel * scaleFactor;
+            this.zoomLevel = Math.max(this.minZoom, Math.min(this.maxZoom, newZoom));
+            
+            // Throttle rendering to improve performance
+            if (!this.pinchUpdateTimeout) {
+                this.pinchUpdateTimeout = setTimeout(() => {
+                    this.renderCanvas();
+                    this.pinchUpdateTimeout = null;
+                }, 16); // ~60fps
+            }
+        }
+    }
+
+    handleTouchEnd(e) {
+        // Allow default behavior for non-canvas elements
+        if (e.target !== this.canvas) {
+            return;
+        }
+        
+        e.preventDefault(); // Prevent default touch behavior only on canvas
+        
+        if (e.touches.length === 0) {
+            // All touches ended
+            if (this.isPinching) {
+                this.isPinching = false;
+                this.lastPinchDistance = 0;
+                // Final render after pinch ends
+                if (this.pinchUpdateTimeout) {
+                    clearTimeout(this.pinchUpdateTimeout);
+                    this.pinchUpdateTimeout = null;
+                }
+                this.renderCanvas();
+            } else {
+                // Single touch ended - treat as mouse up
+                const touch = e.changedTouches[0];
+                const mouseEvent = this.touchToMouseEvent(touch);
+                this.handleMouseUp(mouseEvent);
+            }
+        } else if (e.touches.length === 1) {
+            // One finger remains, stop pinching
+            this.isPinching = false;
+            this.lastPinchDistance = 0;
+            if (this.pinchUpdateTimeout) {
+                clearTimeout(this.pinchUpdateTimeout);
+                this.pinchUpdateTimeout = null;
+            }
+        }
+    }
+
+    touchToMouseEvent(touch) {
+        // Convert touch event to mouse event format
+        return {
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+            button: 0, // Left button
+            preventDefault: () => {},
+            stopPropagation: () => {}
+        };
+    }
+
+    getPinchDistance(touch1, touch2) {
+        // Calculate distance between two touch points
+        const dx = touch1.clientX - touch2.clientX;
+        const dy = touch1.clientY - touch2.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
     }
 
     startWire(connectionPoint) {
