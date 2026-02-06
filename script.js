@@ -26,6 +26,7 @@ class HardwareSetupVisualizer {
         this.isPinching = false;
         this.lastPinchDistance = 0;
         this.lastZoomLevel = 1.0;
+        this.pinchUpdateTimeout = null;
         
         this.setupCanvas();
         this.init();
@@ -635,7 +636,12 @@ class HardwareSetupVisualizer {
 
     // Touch event handlers for mobile support
     handleTouchStart(e) {
-        e.preventDefault(); // Prevent default touch behavior (scrolling, zooming)
+        // Allow default behavior for single-finger scrolling on non-canvas elements
+        if (e.target !== this.canvas) {
+            return;
+        }
+        
+        e.preventDefault(); // Prevent default touch behavior only on canvas
         
         if (e.touches.length === 1) {
             // Single touch - treat as mouse down
@@ -647,11 +653,17 @@ class HardwareSetupVisualizer {
             this.isPinching = true;
             this.lastPinchDistance = this.getPinchDistance(e.touches[0], e.touches[1]);
             this.lastZoomLevel = this.zoomLevel;
+            this.pinchUpdateTimeout = null;
         }
     }
 
     handleTouchMove(e) {
-        e.preventDefault(); // Prevent default touch behavior
+        // Allow default behavior for single-finger scrolling on non-canvas elements
+        if (e.target !== this.canvas) {
+            return;
+        }
+        
+        e.preventDefault(); // Prevent default touch behavior only on canvas
         
         if (e.touches.length === 1 && !this.isPinching) {
             // Single touch - treat as mouse move
@@ -659,26 +671,49 @@ class HardwareSetupVisualizer {
             const mouseEvent = this.touchToMouseEvent(touch);
             this.handleMouseMove(mouseEvent);
         } else if (e.touches.length === 2 && this.isPinching) {
-            // Two-finger touch - handle pinch zoom
+            // Two-finger touch - handle pinch zoom with throttling
             const currentDistance = this.getPinchDistance(e.touches[0], e.touches[1]);
+            
+            // Guard against division by zero
+            if (this.lastPinchDistance === 0 || currentDistance === 0) {
+                return;
+            }
+            
             const scaleFactor = currentDistance / this.lastPinchDistance;
             
             // Apply zoom with limits
             const newZoom = this.lastZoomLevel * scaleFactor;
             this.zoomLevel = Math.max(this.minZoom, Math.min(this.maxZoom, newZoom));
             
-            this.renderCanvas();
+            // Throttle rendering to improve performance
+            if (!this.pinchUpdateTimeout) {
+                this.pinchUpdateTimeout = setTimeout(() => {
+                    this.renderCanvas();
+                    this.pinchUpdateTimeout = null;
+                }, 16); // ~60fps
+            }
         }
     }
 
     handleTouchEnd(e) {
-        e.preventDefault(); // Prevent default touch behavior
+        // Allow default behavior for non-canvas elements
+        if (e.target !== this.canvas) {
+            return;
+        }
+        
+        e.preventDefault(); // Prevent default touch behavior only on canvas
         
         if (e.touches.length === 0) {
             // All touches ended
             if (this.isPinching) {
                 this.isPinching = false;
                 this.lastPinchDistance = 0;
+                // Final render after pinch ends
+                if (this.pinchUpdateTimeout) {
+                    clearTimeout(this.pinchUpdateTimeout);
+                    this.pinchUpdateTimeout = null;
+                }
+                this.renderCanvas();
             } else {
                 // Single touch ended - treat as mouse up
                 const touch = e.changedTouches[0];
@@ -689,6 +724,10 @@ class HardwareSetupVisualizer {
             // One finger remains, stop pinching
             this.isPinching = false;
             this.lastPinchDistance = 0;
+            if (this.pinchUpdateTimeout) {
+                clearTimeout(this.pinchUpdateTimeout);
+                this.pinchUpdateTimeout = null;
+            }
         }
     }
 
