@@ -31,10 +31,11 @@ class HardwareSetupVisualizer {
         // Get the device pixel ratio for sharp rendering
         const dpr = window.devicePixelRatio || 1;
         
-        // Set the canvas size in CSS pixels
-        const rect = this.canvas.getBoundingClientRect();
-        const cssWidth = rect.width;
-        const cssHeight = rect.height;
+        // Get the canvas container dimensions
+        const container = this.canvas.parentElement;
+        const rect = container.getBoundingClientRect();
+        const cssWidth = rect.width - 20; // Account for margin
+        const cssHeight = rect.height - 60; // Account for info bar
         
         // Set the actual canvas size accounting for device pixel ratio
         this.canvas.width = cssWidth * dpr;
@@ -43,6 +44,9 @@ class HardwareSetupVisualizer {
         // Scale the canvas back down using CSS
         this.canvas.style.width = cssWidth + 'px';
         this.canvas.style.height = cssHeight + 'px';
+        
+        // Get fresh context after resize (canvas resize clears context)
+        this.ctx = this.canvas.getContext('2d');
         
         // Scale the drawing context so everything draws at the correct size
         this.ctx.scale(dpr, dpr);
@@ -161,20 +165,19 @@ class HardwareSetupVisualizer {
                         svgData = await this.loadSVG(type.svg, type.id);
                     }
                     
-                    if (svgData && svgData.element) {
+                    if (svgData) {
                         iconElement.innerHTML = '';
                         iconElement.style.backgroundColor = 'transparent';
                         iconElement.style.padding = '2px';
                         
-                        // Clone and configure the SVG element
-                        const svgClone = svgData.element.cloneNode(true);
-                        svgClone.style.width = '100%';
-                        svgClone.style.height = '100%';
-                        svgClone.setAttribute('width', '36');
-                        svgClone.setAttribute('height', '36');
-                        svgClone.setAttribute('viewBox', svgClone.getAttribute('viewBox') || '0 0 100 100');
+                        // Use img tag to avoid Chrome caching issues
+                        const img = document.createElement('img');
+                        img.src = type.svg + '?t=' + Date.now(); // Cache busting
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'contain';
                         
-                        iconElement.appendChild(svgClone);
+                        iconElement.appendChild(img);
                         svgLoaded = true;
                     }
                 } catch (error) {
@@ -205,6 +208,13 @@ class HardwareSetupVisualizer {
 
             componentItem.addEventListener('dragend', () => {
                 componentItem.classList.remove('dragging');
+            });
+
+            // Right-click context menu for toolbox items
+            componentItem.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                const rect = componentItem.getBoundingClientRect();
+                this.showToolboxContextMenu(type, e.clientX, e.clientY);
             });
 
             componentList.appendChild(componentItem);
@@ -259,10 +269,26 @@ class HardwareSetupVisualizer {
                 this.deleteComponent(this.selectedComponent);
             }
         });
+        
+        // Window resize handler
+        window.addEventListener('resize', () => {
+            this.handleResize();
+        });
+    }
+
+    handleResize() {
+        // Debounce resize events
+        clearTimeout(this.resizeTimeout);
+        this.resizeTimeout = setTimeout(() => {
+            this.setupCanvas();
+            this.renderCanvas();
+        }, 100);
     }
 
     initContextMenu() {
         this.contextMenu = document.getElementById('componentContextMenu');
+        this.toolboxContextMenu = document.getElementById('toolboxContextMenu');
+        this.selectedToolboxType = null;
         
         // Mirror component functionality
         document.getElementById('mirrorComponent').addEventListener('click', () => {
@@ -272,10 +298,38 @@ class HardwareSetupVisualizer {
             }
         });
         
-        // Hide context menu when clicking elsewhere
+        // Toolbox context menu actions
+        document.getElementById('addToCanvas').addEventListener('click', () => {
+            if (this.selectedToolboxType) {
+                // Add component to center of visible canvas area
+                const centerX = (this.logicalWidth / 2 / this.zoomLevel) - this.panX;
+                const centerY = (this.logicalHeight / 2 / this.zoomLevel) - this.panY;
+                this.addComponent(this.selectedToolboxType.id, centerX, centerY);
+                this.hideToolboxContextMenu();
+            }
+        });
+        
+        document.getElementById('openImage').addEventListener('click', () => {
+            if (this.selectedToolboxType && this.selectedToolboxType.svg) {
+                window.open(this.selectedToolboxType.svg, '_blank');
+            }
+            this.hideToolboxContextMenu();
+        });
+        
+        document.getElementById('removeAll').addEventListener('click', () => {
+            if (this.selectedToolboxType) {
+                this.removeAllComponentsOfType(this.selectedToolboxType.id);
+                this.hideToolboxContextMenu();
+            }
+        });
+        
+        // Hide context menus when clicking elsewhere
         document.addEventListener('click', (e) => {
             if (!this.contextMenu.contains(e.target)) {
                 this.hideContextMenu();
+            }
+            if (!this.toolboxContextMenu.contains(e.target)) {
+                this.hideToolboxContextMenu();
             }
         });
     }
@@ -290,6 +344,39 @@ class HardwareSetupVisualizer {
     hideContextMenu() {
         this.contextMenu.style.display = 'none';
         this.selectedForMenu = null;
+    }
+    
+    showToolboxContextMenu(componentType, x, y) {
+        this.selectedToolboxType = componentType;
+        this.toolboxContextMenu.style.display = 'block';
+        this.toolboxContextMenu.style.left = (x + 5) + 'px';
+        this.toolboxContextMenu.style.top = (y + 5) + 'px';
+    }
+    
+    hideToolboxContextMenu() {
+        this.toolboxContextMenu.style.display = 'none';
+        this.selectedToolboxType = null;
+    }
+    
+    removeAllComponentsOfType(typeId) {
+        // Get all components of this type
+        const componentsToRemove = this.components.filter(comp => comp.type.id === typeId);
+        
+        // Remove all wires connected to these components
+        this.wires = this.wires.filter(wire => 
+            !componentsToRemove.includes(wire.start.component) && 
+            !componentsToRemove.includes(wire.end.component)
+        );
+        
+        // Remove the components
+        this.components = this.components.filter(comp => comp.type.id !== typeId);
+        
+        // Clear selection if selected component was removed
+        if (this.selectedComponent && this.selectedComponent.type.id === typeId) {
+            this.selectedComponent = null;
+        }
+        
+        this.renderCanvas();
     }
     
     mirrorComponent(component) {
@@ -431,16 +518,31 @@ class HardwareSetupVisualizer {
 
         // Update cursor based on what's under the mouse
         if (!this.isDragging && !this.isDrawingWire && !this.isPanning) {
-            const component = this.getComponentAt(x, y);
-            const connectionPoint = this.getConnectionPointAt(x, y);
-            const wire = this.getWireAt((e.clientX - this.canvas.getBoundingClientRect().left) / this.zoomLevel - this.panX, (e.clientY - this.canvas.getBoundingClientRect().top) / this.zoomLevel - this.panY);
+            // Check if hovering over zoom indicator (uses canvas coordinates)
+            const rect = this.canvas.getBoundingClientRect();
+            const canvasX = e.clientX - rect.left;
+            const canvasY = e.clientY - rect.top;
             
-            if (connectionPoint) {
-                this.canvas.style.cursor = 'crosshair';
-            } else if (component || wire) {
-                this.canvas.style.cursor = 'grab';
+            const zoomIndicatorX = this.logicalWidth - 80;
+            const zoomIndicatorY = this.logicalHeight - 30;
+            const zoomIndicatorWidth = 75;
+            const zoomIndicatorHeight = 25;
+            
+            if (canvasX >= zoomIndicatorX && canvasX <= zoomIndicatorX + zoomIndicatorWidth &&
+                canvasY >= zoomIndicatorY && canvasY <= zoomIndicatorY + zoomIndicatorHeight) {
+                this.canvas.style.cursor = 'pointer';
             } else {
-                this.canvas.style.cursor = 'move';
+                const component = this.getComponentAt(x, y);
+                const connectionPoint = this.getConnectionPointAt(x, y);
+                const wire = this.getWireAt((e.clientX - this.canvas.getBoundingClientRect().left) / this.zoomLevel - this.panX, (e.clientY - this.canvas.getBoundingClientRect().top) / this.zoomLevel - this.panY);
+                
+                if (connectionPoint) {
+                    this.canvas.style.cursor = 'crosshair';
+                } else if (component || wire) {
+                    this.canvas.style.cursor = 'grab';
+                } else {
+                    this.canvas.style.cursor = 'move';
+                }
             }
         }
     }
@@ -467,6 +569,24 @@ class HardwareSetupVisualizer {
     }
 
     handleClick(e) {
+        // Check if clicking on zoom indicator (uses canvas coordinates, not world coordinates)
+        const rect = this.canvas.getBoundingClientRect();
+        const canvasX = e.clientX - rect.left;
+        const canvasY = e.clientY - rect.top;
+        
+        const zoomIndicatorX = this.logicalWidth - 80;
+        const zoomIndicatorY = this.logicalHeight - 30;
+        const zoomIndicatorWidth = 75;
+        const zoomIndicatorHeight = 25;
+        
+        if (canvasX >= zoomIndicatorX && canvasX <= zoomIndicatorX + zoomIndicatorWidth &&
+            canvasY >= zoomIndicatorY && canvasY <= zoomIndicatorY + zoomIndicatorHeight) {
+            // Reset zoom to 100%
+            this.zoomLevel = 1.0;
+            this.renderCanvas();
+            return;
+        }
+        
         const coords = this.getMouseCoordinates(e);
         const x = coords.x;
         const y = coords.y;
@@ -954,6 +1074,23 @@ class HardwareSetupVisualizer {
     }
 
     drawComponent(component) {
+        // Highlight selected component
+        const isSelected = this.selectedComponent === component;
+        
+        if (isSelected) {
+            // Draw highlight border
+            this.ctx.strokeStyle = '#3498db';
+            this.ctx.lineWidth = 3;
+            this.ctx.setLineDash([]);
+            this.ctx.strokeRect(component.x - 3, component.y - 3, component.width + 6, component.height + 6);
+            
+            // Draw subtle glow effect
+            this.ctx.shadowColor = '#3498db';
+            this.ctx.shadowBlur = 10;
+            this.ctx.strokeRect(component.x - 3, component.y - 3, component.width + 6, component.height + 6);
+            this.ctx.shadowBlur = 0;
+        }
+        
         // Check if SVG is available for this component
         const svgData = this.svgCache.get(component.type.id);
         
@@ -1038,12 +1175,27 @@ class HardwareSetupVisualizer {
             }
         });
         
-        // Draw component label above the component (if enabled)
+        // Draw component label (if enabled)
         if (this.showLabels) {
             this.ctx.fillStyle = '#2c3e50';
             this.ctx.font = 'bold 12px Arial';
             this.ctx.textAlign = 'center';
-            this.ctx.fillText(component.type.name, component.x + component.width/2, component.y - 8);
+            
+            // Check if there are connectors on top or bottom
+            const hasTopConnector = component.connectionPoints.some(p => p.side === 'top');
+            const hasBottomConnector = component.connectionPoints.some(p => p.side === 'bottom');
+            
+            // Position label on opposite side of connectors
+            let labelY;
+            if (hasTopConnector && !hasBottomConnector) {
+                // Connector on top -> label on bottom
+                labelY = component.y + component.height + 15;
+            } else {
+                // Default: label on top (including when both or neither have connectors)
+                labelY = component.y - 8;
+            }
+            
+            this.ctx.fillText(component.type.name, component.x + component.width/2, labelY);
         }
     }
 

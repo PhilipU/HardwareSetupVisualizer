@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f0f0;
+    background-color: #fafafa;
     height: 100vh;
     overflow: hidden;
 }
@@ -14,24 +14,30 @@ body {
 .container {
     display: flex;
     height: 100vh;
+    min-width: 0;
 }
 
 /* Toolbox Styles */
 .toolbox {
     width: 250px;
-    background-color: #2c3e50;
-    color: white;
+    min-width: 200px;
+    flex-shrink: 0;
+    background-color: #ffffff;
+    color: #4a5568;
     padding: 20px;
     overflow-y: auto;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-right: 1px dotted #d1d5db;
+    z-index: 100;
 }
 
 .toolbox h3 {
     margin-bottom: 20px;
     text-align: center;
-    color: #ecf0f1;
-    border-bottom: 2px solid #3498db;
+    color: #374151;
+    border-bottom: 1px dotted #9ca3af;
     padding-bottom: 10px;
+    font-weight: 500;
 }
 
 .component-list {
@@ -45,17 +51,19 @@ body {
     display: flex;
     align-items: center;
     padding: 12px;
-    background-color: #34495e;
+    background-color: #f9fafb;
     border-radius: 8px;
     cursor: grab;
     transition: all 0.3s ease;
-    border: 2px solid transparent;
+    border: 1px dotted #d1d5db;
 }
 
 .component-item:hover {
-    background-color: #4a6577;
-    border-color: #3498db;
+    background-color: #ffffff;
+    border-color: #9ca3af;
+    border-style: solid;
     transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .component-item:active {
@@ -65,16 +73,17 @@ body {
 .component-icon {
     width: 40px;
     height: 40px;
-    background-color: #3498db;
+    background-color: #e5e7eb;
     border-radius: 4px;
     margin-right: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    color: white;
+    color: #6b7280;
     font-size: 12px;
     overflow: hidden;
+    border: 1px solid #d1d5db;
 }
 
 .component-icon svg {
@@ -86,6 +95,7 @@ body {
 .component-name {
     font-size: 14px;
     font-weight: 500;
+    color: #374151;
 }
 
 /* Controls */
@@ -97,16 +107,16 @@ body {
 
 .toggle-control {
     padding: 8px;
-    background-color: #34495e;
+    background-color: #f9fafb;
     border-radius: 5px;
-    border: 1px solid #3498db;
+    border: 1px dotted #d1d5db;
 }
 
 .toggle-control label {
     display: flex;
     align-items: center;
     cursor: pointer;
-    color: white;
+    color: #4a5568;
     font-size: 12px;
 }
 
@@ -117,17 +127,19 @@ body {
 
 .controls button {
     padding: 10px;
-    border: none;
+    border: 1px solid #d1d5db;
     border-radius: 5px;
-    background-color: #3498db;
-    color: white;
+    background-color: #ffffff;
+    color: #4a5568;
     cursor: pointer;
     font-size: 14px;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .controls button:hover {
-    background-color: #2980b9;
+    background-color: #f3f4f6;
+    border-color: #9ca3af;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .controls button:active {
@@ -137,26 +149,28 @@ body {
 /* Canvas Container */
 .canvas-container {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background-color: #fafafa;
     position: relative;
+    overflow: hidden;
 }
 
 /* Component Context Menu */
 .context-menu {
     position: absolute;
-    background-color: #2c3e50;
-    border: 2px solid #3498db;
-    border-radius: 5px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     z-index: 1000;
     min-width: 80px;
 }
 
 .menu-item {
     padding: 8px 12px;
-    color: white;
+    color: #4a5568;
     cursor: pointer;
     font-size: 12px;
     transition: background-color 0.2s;
@@ -164,19 +178,19 @@ body {
 }
 
 .menu-item:hover {
-    background-color: #3498db;
+    background-color: #f3f4f6;
 }
 
 .menu-item:active {
-    background-color: #2980b9;
+    background-color: #e5e7eb;
 }
 
 #setupCanvas {
-    border: 2px solid #bdc3c7;
-    background-color: #fafafa;
+    border: 1px solid #e5e7eb;
+    background-color: #ffffff;
     background-image: 
-        linear-gradient(rgba(0,0,0,.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,0,0,.1) 1px, transparent 1px);
+        linear-gradient(rgba(0,0,0,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,.06) 1px, transparent 1px);
     background-size: 20px 20px;
     cursor: crosshair;
     margin: 10px;
@@ -188,10 +202,10 @@ body {
 
 .canvas-info {
     padding: 10px 20px;
-    background-color: #ecf0f1;
-    color: #2c3e50;
+    background-color: #ffffff;
+    color: #6b7280;
     font-size: 12px;
-    border-top: 1px solid #bdc3c7;
+    border-top: 1px dotted #e5e7eb;
     flex-shrink: 0;
 }
 
@@ -206,19 +220,19 @@ body {
     pointer-events: none;
     z-index: 1000;
     opacity: 0.8;
-    border: 2px dashed #3498db;
-    background-color: rgba(52, 152, 219, 0.1);
+    border: 1px dashed #9ca3af;
+    background-color: rgba(243, 244, 246, 0.5);
 }
 
 /* Component on Canvas */
 .canvas-component {
     position: absolute;
-    border: 2px solid #2c3e50;
+    border: 1px solid #d1d5db;
     border-radius: 8px;
-    background-color: white;
+    background-color: #ffffff;
     padding: 8px;
     cursor: move;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     user-select: none;
     min-width: 80px;
     min-height: 60px;
@@ -226,11 +240,12 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s ease;
 }
 
 .canvas-component.selected {
-    border-color: #e74c3c;
-    box-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
+    border-color: #9ca3af;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .canvas-component .component-icon {
@@ -240,6 +255,7 @@ body {
 .canvas-component .component-name {
     font-size: 10px;
     text-align: center;
+    color: #6b7280;
 }
 
 /* Connection Points */
@@ -247,41 +263,45 @@ body {
     position: absolute;
     width: 8px;
     height: 8px;
-    background-color: #e74c3c;
+    background-color: #9ca3af;
     border: 2px solid white;
     border-radius: 50%;
     cursor: crosshair;
     z-index: 10;
+    transition: all 0.2s ease;
 }
 
 .connection-point:hover {
-    background-color: #c0392b;
-    transform: scale(1.2);
+    background-color: #6b7280;
+    transform: scale(1.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Wire being drawn */
 .drawing-wire {
-    stroke: #e74c3c;
+    stroke: #6b7280;
     stroke-width: 2;
     fill: none;
     pointer-events: none;
+    stroke-dasharray: 4, 2;
 }
 
 /* Completed wires */
 .wire {
-    stroke: #34495e;
-    stroke-width: 2;
+    stroke: #9ca3af;
+    stroke-width: 1.5;
     fill: none;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .wire:hover {
-    stroke: #e74c3c;
-    stroke-width: 3;
+    stroke: #6b7280;
+    stroke-width: 2;
 }
 
 .wire.selected {
-    stroke: #e74c3c;
-    stroke-width: 3;
-    stroke-dasharray: 5,5;
+    stroke: #4a5568;
+    stroke-width: 2;
+    stroke-dasharray: 5,3;
 }

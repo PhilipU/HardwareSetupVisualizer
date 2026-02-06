@@ -1,80 +1,53 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60">
   <!-- Device Body -->
-  <rect x="5" y="10" width="90" height="40" rx="3" ry="3" 
-        fill="#2c3e50" stroke="#34495e" stroke-width="1"/>
+  <rect x="8" y="12" width="84" height="36" rx="2" 
+        fill="#ffffff" stroke="#4a5568" stroke-width="1.5"/>
   
   <!-- Top Label Area -->
-  <rect x="8" y="13" width="84" height="12" rx="1" ry="1" 
-        fill="#34495e"/>
+  <rect x="11" y="15" width="78" height="10" rx="1" 
+        fill="#f9fafb" stroke="#d1d5db" stroke-width="0.8"/>
   
-  <!-- FL3X Brand Text -->
-  <text x="50" y="21" text-anchor="middle" fill="#e74c3c" 
-        font-family="Arial, sans-serif" font-size="6" font-weight="bold">FL3X</text>
+  <!-- Left Ethernet Port -->
+  <rect x="3" y="28" width="7" height="6" rx="1" 
+        fill="none" stroke="#6b7280" stroke-width="1"/>
+  <rect x="4" y="29.5" width="5" height="3" fill="none" stroke="#9ca3af" stroke-width="0.6"/>
   
-  <!-- Device Model Text -->
-  <text x="50" y="28" text-anchor="middle" fill="#bdc3c7" 
-        font-family="Arial, sans-serif" font-size="3">MEDIA 100BASE-T1</text>
-  
-  <!-- Left Ethernet Port (100BASE-T1) -->
-  <rect x="2" y="32" width="8" height="6" rx="1" ry="1" 
-        fill="#34495e" stroke="#2c3e50" stroke-width="0.5"/>
-  <rect x="3" y="33" width="6" height="4" fill="#1a1a1a"/>
-  <text x="1" y="46" fill="#e74c3c" font-family="Arial, sans-serif" 
-        font-size="2.5" font-weight="bold">T1</text>
-  
-  <!-- Right Ethernet Port (100BASE-TX) -->
-  <rect x="90" y="32" width="8" height="6" rx="1" ry="1" 
-        fill="#34495e" stroke="#2c3e50" stroke-width="0.5"/>
-  <rect x="91" y="33" width="6" height="4" fill="#1a1a1a"/>
-  <text x="91" y="46" fill="#3498db" font-family="Arial, sans-serif" 
-        font-size="2.5" font-weight="bold">TX</text>
+  <!-- Right Ethernet Port -->
+  <rect x="90" y="28" width="7" height="6" rx="1" 
+        fill="none" stroke="#6b7280" stroke-width="1"/>
+  <rect x="91" y="29.5" width="5" height="3" fill="none" stroke="#9ca3af" stroke-width="0.6"/>
   
   <!-- Power Connector (Top) -->
-  <rect x="47" y="8" width="6" height="4" rx="1" ry="1" 
-        fill="#e67e22" stroke="#d35400" stroke-width="0.5"/>
-  <circle cx="50" y="10" r="0.8" fill="#f39c12"/>
+  <rect x="47" y="10" width="6" height="3" rx="1" 
+        fill="none" stroke="#6b7280" stroke-width="1"/>
+  <circle cx="50" cy="11.5" r="0.6" fill="#d1d5db"/>
   
-  <!-- Status LEDs -->
-  <circle cx="15" cy="35" r="1.5" fill="#27ae60"/>
-  <circle cx="20" cy="35" r="1.5" fill="#f39c12"/>
-  <circle cx="25" cy="35" r="1.5" fill="#e74c3c"/>
+  <!-- Status LEDs (minimalist) -->
+  <circle cx="20" cy="20" r="1.2" fill="#d1d5db" stroke="#9ca3af" stroke-width="0.5"/>
+  <circle cx="27" cy="20" r="1.2" fill="none" stroke="#9ca3af" stroke-width="0.5"/>
+  <circle cx="34" cy="20" r="1.2" fill="none" stroke="#9ca3af" stroke-width="0.5"/>
   
-  <!-- LED Labels -->
-  <text x="15" y="42" text-anchor="middle" fill="#bdc3c7" 
-        font-family="Arial, sans-serif" font-size="2">PWR</text>
-  <text x="20" y="42" text-anchor="middle" fill="#bdc3c7" 
-        font-family="Arial, sans-serif" font-size="2">ACT</text>
-  <text x="25" y="42" text-anchor="middle" fill="#bdc3c7" 
-        font-family="Arial, sans-serif" font-size="2">LNK</text>
+  <!-- Conversion Arrows -->
+  <path d="M 42 31 L 48 31 M 46 29.5 L 48 31 L 46 32.5" 
+        stroke="#9ca3af" stroke-width="1" fill="none"/>
   
-  <!-- Conversion Arrow -->
-  <path d="M 35 35 L 42 35 M 40 33 L 42 35 L 40 37" 
-        stroke="#95a5a6" stroke-width="1" fill="none"/>
-  
-  <!-- Reverse Conversion Arrow -->
-  <path d="M 65 35 L 58 35 M 60 33 L 58 35 L 60 37" 
-        stroke="#95a5a6" stroke-width="1" fill="none"/>
-  
-  <!-- Conversion Label -->
-  <text x="50" y="36" text-anchor="middle" fill="#95a5a6" 
-        font-family="Arial, sans-serif" font-size="2.5">CONVERT</text>
+  <path d="M 58 31 L 52 31 M 54 29.5 L 52 31 L 54 32.5" 
+        stroke="#9ca3af" stroke-width="1" fill="none"/>
   
   <!-- Ventilation Grilles -->
-  <g stroke="#7f8c8d" stroke-width="0.3" opacity="0.6">
-    <line x1="75" y1="15" x2="75" y2="23"/>
-    <line x1="77" y1="15" x2="77" y2="23"/>
-    <line x1="79" y1="15" x2="79" y2="23"/>
-    <line x1="81" y1="15" x2="81" y2="23"/>
-    <line x1="83" y1="15" x2="83" y2="23"/>
-    <line x1="85" y1="15" x2="85" y2="23"/>
-    <line x1="87" y1="15" x2="87" y2="23"/>
-    <line x1="89" y1="15" x2="89" y2="23"/>
+  <g stroke="#d1d5db" stroke-width="0.4" opacity="0.8">
+    <line x1="72" y1="17" x2="72" y2="23"/>
+    <line x1="74" y1="17" x2="74" y2="23"/>
+    <line x1="76" y1="17" x2="76" y2="23"/>
+    <line x1="78" y1="17" x2="78" y2="23"/>
+    <line x1="80" y1="17" x2="80" y2="23"/>
+    <line x1="82" y1="17" x2="82" y2="23"/>
+    <line x1="84" y1="17" x2="84" y2="23"/>
   </g>
   
   <!-- Mounting Holes -->
-  <circle cx="10" cy="15" r="1" fill="#1a252f" stroke="#34495e" stroke-width="0.5"/>
-  <circle cx="90" cy="15" r="1" fill="#1a252f" stroke="#34495e" stroke-width="0.5"/>
-  <circle cx="10" cy="45" r="1" fill="#1a252f" stroke="#34495e" stroke-width="0.5"/>
-  <circle cx="90" cy="45" r="1" fill="#1a252f" stroke="#34495e" stroke-width="0.5"/>
+  <circle cx="13" cy="17" r="0.8" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+  <circle cx="87" cy="17" r="0.8" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+  <circle cx="13" cy="43" r="0.8" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+  <circle cx="87" cy="43" r="0.8" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
 </svg>

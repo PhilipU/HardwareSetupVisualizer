@@ -1,63 +1,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="80" height="60" viewBox="0 0 80 60">
   <!-- Oscilloscope body -->
-  <rect x="3" y="3" width="74" height="54" rx="3" ry="3" 
-        fill="#34495e" stroke="#2c3e50" stroke-width="2"/>
-  
-  <!-- Front panel -->
-  <rect x="6" y="6" width="68" height="48" rx="2" ry="2" 
-        fill="#2c3e50" stroke="#34495e" stroke-width="1"/>
+  <rect x="6" y="6" width="68" height="48" rx="2" 
+        fill="#ffffff" stroke="#4a5568" stroke-width="1.5"/>
   
   <!-- CRT Screen -->
-  <rect x="10" y="10" width="35" height="25" rx="2" ry="2" 
-        fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+  <rect x="12" y="12" width="34" height="24" rx="1" 
+        fill="#f9fafb" stroke="#9ca3af" stroke-width="1"/>
   
   <!-- Grid lines on screen -->
-  <defs>
-    <pattern id="grid" width="5" height="5" patternUnits="userSpaceOnUse">
-      <path d="M 5 0 L 0 0 0 5" fill="none" stroke="#004400" stroke-width="0.3"/>
-    </pattern>
-  </defs>
-  <rect x="10" y="10" width="35" height="25" fill="url(#grid)"/>
+  <g stroke="#d1d5db" stroke-width="0.3">
+    <line x1="21" y1="12" x2="21" y2="36"/>
+    <line x1="29" y1="12" x2="29" y2="36"/>
+    <line x1="37" y1="12" x2="37" y2="36"/>
+    <line x1="12" y1="18" x2="46" y2="18"/>
+    <line x1="12" y1="24" x2="46" y2="24"/>
+    <line x1="12" y1="30" x2="46" y2="30"/>
+  </g>
   
   <!-- Waveform trace -->
-  <path d="M 12 22 Q 18 15 22 22 Q 28 30 32 22 Q 38 15 43 22" 
-        fill="none" stroke="#00ff00" stroke-width="1.5"/>
+  <path d="M 14 24 Q 20 18 24 24 Q 30 30 34 24 Q 40 18 44 24" 
+        fill="none" stroke="#6b7280" stroke-width="1.5"/>
   
   <!-- Control knobs -->
-  <circle cx="55" cy="15" r="4" fill="#7f8c8d" stroke="#95a5a6" stroke-width="1"/>
-  <circle cx="65" cy="15" r="4" fill="#7f8c8d" stroke="#95a5a6" stroke-width="1"/>
+  <circle cx="56" cy="16" r="4" fill="none" stroke="#6b7280" stroke-width="1.5"/>
+  <circle cx="66" cy="16" r="4" fill="none" stroke="#6b7280" stroke-width="1.5"/>
   
   <!-- Knob indicators -->
-  <line x1="55" y1="12" x2="55" y2="10" stroke="#2c3e50" stroke-width="1"/>
-  <line x1="65" y1="12" x2="65" y2="10" stroke="#2c3e50" stroke-width="1"/>
+  <line x1="56" y1="12" x2="56" y2="14" stroke="#6b7280" stroke-width="1.5"/>
+  <line x1="66" y1="12" x2="66" y2="14" stroke="#6b7280" stroke-width="1.5"/>
   
   <!-- Channel buttons -->
-  <rect x="52" y="25" width="8" height="6" rx="1" ry="1" 
-        fill="#e74c3c" stroke="#c0392b" stroke-width="1"/>
-  <rect x="62" y="25" width="8" height="6" rx="1" ry="1" 
-        fill="#3498db" stroke="#2980b9" stroke-width="1"/>
+  <rect x="52" y="25" width="8" height="5" rx="1" 
+        fill="none" stroke="#9ca3af" stroke-width="1"/>
+  <rect x="62" y="25" width="8" height="5" rx="1" 
+        fill="none" stroke="#9ca3af" stroke-width="1"/>
   
   <!-- Input connectors -->
-  <circle cx="55" cy="40" r="3" fill="#e74c3c" stroke="#c0392b" stroke-width="1"/>
-  <circle cx="65" cy="40" r="3" fill="#3498db" stroke="#2980b9" stroke-width="1"/>
-  
-  <!-- Labels -->
-  <text x="55" y="22" text-anchor="middle" fill="#bdc3c7" 
-        font-family="Arial" font-size="3">TIME</text>
-  <text x="65" y="22" text-anchor="middle" fill="#bdc3c7" 
-        font-family="Arial" font-size="3">VOLT</text>
-  
-  <text x="56" y="29" text-anchor="middle" fill="#fff" 
-        font-family="Arial" font-size="3">CH1</text>
-  <text x="66" y="29" text-anchor="middle" fill="#fff" 
-        font-family="Arial" font-size="3">CH2</text>
-        
-  <text x="55" y="50" text-anchor="middle" fill="#bdc3c7" 
-        font-family="Arial" font-size="3">CH1</text>
-  <text x="65" y="50" text-anchor="middle" fill="#bdc3c7" 
-        font-family="Arial" font-size="3">CH2</text>
-  
-  <!-- Brand/Model -->
-  <text x="27" y="45" text-anchor="middle" fill="#bdc3c7" 
-        font-family="Arial" font-size="4" font-weight="bold">DSO-2000</text>
+  <circle cx="56" cy="40" r="3" fill="none" stroke="#6b7280" stroke-width="1.5"/>
+  <circle cx="66" cy="40" r="3" fill="none" stroke="#6b7280" stroke-width="1.5"/>
 </svg>
