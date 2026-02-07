@@ -27,7 +27,10 @@ class HardwareSetupVisualizer {
         this.lastPinchDistance = 0;
         this.lastZoomLevel = 1.0;
         this.pinchUpdateTimeout = null;
-        
+        this.longPressTimer = null;
+        this.longPressTriggered = false;
+        this.longPressStartPos = null;
+
         this.setupCanvas();
         this.init();
     }
@@ -307,7 +310,15 @@ class HardwareSetupVisualizer {
                 this.hideContextMenu();
             }
         });
-        
+
+        // Delete component functionality
+        document.getElementById('deleteComponent').addEventListener('click', () => {
+            if (this.selectedForMenu) {
+                this.deleteComponent(this.selectedForMenu);
+                this.hideContextMenu();
+            }
+        });
+
         // Toolbox context menu actions
         document.getElementById('addToCanvas').addEventListener('click', () => {
             if (this.selectedToolboxType) {
@@ -640,15 +651,40 @@ class HardwareSetupVisualizer {
         if (e.target !== this.canvas) {
             return;
         }
-        
+
         e.preventDefault(); // Prevent default touch behavior only on canvas
-        
+
         if (e.touches.length === 1) {
-            // Single touch - treat as mouse down
+            // Single touch - check for long press and treat as mouse down
             const touch = e.touches[0];
             const mouseEvent = this.touchToMouseEvent(touch);
+            const coords = this.getMouseCoordinates(mouseEvent);
+            const component = this.getComponentAt(coords.x, coords.y);
+
+            // Store touch start position to detect movement
+            this.longPressStartPos = { x: touch.clientX, y: touch.clientY };
+            this.longPressTriggered = false;
+
+            // If touching a component, start long press timer
+            if (component) {
+                this.longPressTimer = setTimeout(() => {
+                    // Long press detected - show context menu
+                    this.longPressTriggered = true;
+                    // Cancel any ongoing drag
+                    this.isDragging = false;
+                    this.isPanning = false;
+                    const rect = this.canvas.getBoundingClientRect();
+                    const menuX = touch.clientX - rect.left;
+                    const menuY = touch.clientY - rect.top;
+                    this.showContextMenu(component, menuX, menuY);
+                }, 500); // 500ms for long press
+            }
+
             this.handleMouseDown(mouseEvent);
         } else if (e.touches.length === 2) {
+            // Cancel long press if second finger touches
+            this.cancelLongPress();
+
             // Two-finger touch - prepare for pinch zoom
             this.isPinching = true;
             this.lastPinchDistance = this.getPinchDistance(e.touches[0], e.touches[1]);
@@ -662,29 +698,48 @@ class HardwareSetupVisualizer {
         if (e.target !== this.canvas) {
             return;
         }
-        
+
         e.preventDefault(); // Prevent default touch behavior only on canvas
-        
+
         if (e.touches.length === 1 && !this.isPinching) {
-            // Single touch - treat as mouse move
             const touch = e.touches[0];
+
+            // Check if touch has moved significantly to cancel long press
+            if (this.longPressTimer && this.longPressStartPos) {
+                const moveDistance = Math.sqrt(
+                    Math.pow(touch.clientX - this.longPressStartPos.x, 2) +
+                    Math.pow(touch.clientY - this.longPressStartPos.y, 2)
+                );
+
+                // Cancel long press if moved more than 10 pixels
+                if (moveDistance > 10) {
+                    this.cancelLongPress();
+                }
+            }
+
+            // Don't process move events if long press was triggered
+            if (this.longPressTriggered) {
+                return;
+            }
+
+            // Single touch - treat as mouse move
             const mouseEvent = this.touchToMouseEvent(touch);
             this.handleMouseMove(mouseEvent);
         } else if (e.touches.length === 2 && this.isPinching) {
             // Two-finger touch - handle pinch zoom with throttling
             const currentDistance = this.getPinchDistance(e.touches[0], e.touches[1]);
-            
+
             // Guard against division by zero
             if (this.lastPinchDistance === 0 || currentDistance === 0) {
                 return;
             }
-            
+
             const scaleFactor = currentDistance / this.lastPinchDistance;
-            
+
             // Apply zoom with limits
             const newZoom = this.lastZoomLevel * scaleFactor;
             this.zoomLevel = Math.max(this.minZoom, Math.min(this.maxZoom, newZoom));
-            
+
             // Throttle rendering to improve performance
             if (!this.pinchUpdateTimeout) {
                 this.pinchUpdateTimeout = setTimeout(() => {
@@ -700,9 +755,12 @@ class HardwareSetupVisualizer {
         if (e.target !== this.canvas) {
             return;
         }
-        
+
         e.preventDefault(); // Prevent default touch behavior only on canvas
-        
+
+        // Cancel long press timer
+        this.cancelLongPress();
+
         if (e.touches.length === 0) {
             // All touches ended
             if (this.isPinching) {
@@ -714,12 +772,15 @@ class HardwareSetupVisualizer {
                     this.pinchUpdateTimeout = null;
                 }
                 this.renderCanvas();
-            } else {
-                // Single touch ended - treat as mouse up
+            } else if (!this.longPressTriggered) {
+                // Single touch ended - treat as mouse up only if long press wasn't triggered
                 const touch = e.changedTouches[0];
                 const mouseEvent = this.touchToMouseEvent(touch);
                 this.handleMouseUp(mouseEvent);
             }
+
+            // Reset long press flag
+            this.longPressTriggered = false;
         } else if (e.touches.length === 1) {
             // One finger remains, stop pinching
             this.isPinching = false;
@@ -747,6 +808,15 @@ class HardwareSetupVisualizer {
         const dx = touch1.clientX - touch2.clientX;
         const dy = touch1.clientY - touch2.clientY;
         return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    cancelLongPress() {
+        // Cancel the long press timer if it exists
+        if (this.longPressTimer) {
+            clearTimeout(this.longPressTimer);
+            this.longPressTimer = null;
+        }
+        this.longPressStartPos = null;
     }
 
     startWire(connectionPoint) {
