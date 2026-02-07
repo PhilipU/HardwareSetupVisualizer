@@ -11,6 +11,16 @@
         <!-- Component Toolbox -->
         <div class="toolbox">
             <h3>Components</h3>
+            <div class="category-selector-container">
+                <label for="categorySelector">Category:</label>
+                <div class="category-selector-wrapper">
+                    <div id="categoryIcon" class="category-icon-display"></div>
+                    <select id="categorySelector" class="category-selector">
+                        <option value="all">📦 All Components</option>
+                        <!-- Categories will be loaded by JavaScript -->
+                    </select>
+                </div>
+            </div>
             <div class="component-list" id="componentList">
                 <!-- Components will be loaded here -->
             </div>

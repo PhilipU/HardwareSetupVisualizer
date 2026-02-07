@@ -22,6 +22,9 @@ class HardwareSetupVisualizer {
         this.selectedForMenu = null;
         this.contextMenu = null;
         this.cursorPos = { x: 0, y: 0 };
+        // Category properties
+        this.categories = [];
+        this.selectedCategory = 'measurement';
         // Touch event properties
         this.isPinching = false;
         this.lastPinchDistance = 0;
@@ -65,10 +68,26 @@ class HardwareSetupVisualizer {
     }
 
     async init() {
+        await this.loadCategories();
         await this.loadComponentTypes();
+        this.setupCategorySelector();
+        // Re-render toolbox with correct category after selector is set up
+        await this.renderToolbox();
         this.setupEventListeners();
         this.initContextMenu();
         this.renderCanvas();
+    }
+
+    async loadCategories() {
+        try {
+            // Load all categories from a single file
+            const categoriesResponse = await fetch('categories.json');
+            const categoriesData = await categoriesResponse.json();
+            this.categories = categoriesData.categories;
+        } catch (error) {
+            console.error('Could not load categories:', error);
+            this.categories = [];
+        }
     }
 
     async loadComponentTypes() {
@@ -79,8 +98,6 @@ class HardwareSetupVisualizer {
             
             // Preload SVG images
             await this.preloadSVGs();
-            
-            await this.renderToolbox();
         } catch (error) {
             console.error('Could not load components:', error);
             // Fallback components
@@ -94,7 +111,6 @@ class HardwareSetupVisualizer {
                 { id: 'mb', name: 'Motherboard', icon: 'MB', color: '#16a085' },
                 { id: 'cable', name: 'Cable', icon: 'CBL', color: '#7f8c8d' }
             ];
-            await this.renderToolbox();
         }
     }
 
@@ -146,11 +162,67 @@ class HardwareSetupVisualizer {
         }
     }
 
+    setupCategorySelector() {
+        const categorySelector = document.getElementById('categorySelector');
+        if (!categorySelector) return;
+
+        // Clear existing options
+        categorySelector.innerHTML = '';
+
+        // Add all category options from the loaded categories
+        for (const category of this.categories) {
+            const option = document.createElement('option');
+            option.value = category.id;
+            option.textContent = category.name;
+            categorySelector.appendChild(option);
+        }
+
+        // Set the default selected category
+        categorySelector.value = this.selectedCategory;
+
+        // Set up change event handler
+        categorySelector.addEventListener('change', (e) => {
+            this.selectedCategory = e.target.value;
+            this.updateCategoryIcon();
+            this.renderToolbox();
+        });
+
+        // Initial icon update
+        this.updateCategoryIcon();
+    }
+
+    updateCategoryIcon() {
+        const iconContainer = document.getElementById('categoryIcon');
+        if (!iconContainer) return;
+
+        iconContainer.innerHTML = '';
+
+        const category = this.categories.find(c => c.id === this.selectedCategory);
+        if (category && category.icon) {
+            iconContainer.style.display = 'flex';
+            iconContainer.textContent = category.icon;
+        } else {
+            iconContainer.style.display = 'none';
+        }
+    }
+
+    filterComponentsByCategory() {
+        if (this.selectedCategory === 'all') {
+            return this.componentTypes;
+        }
+        
+        return this.componentTypes.filter(type => {
+            return type.categories && type.categories.includes(this.selectedCategory);
+        });
+    }
+
     async renderToolbox() {
         const componentList = document.getElementById('componentList');
         componentList.innerHTML = '';
 
-        for (const type of this.componentTypes) {
+        const filteredComponents = this.filterComponentsByCategory();
+
+        for (const type of filteredComponents) {
             const componentItem = document.createElement('div');
             componentItem.className = 'component-item';
             componentItem.draggable = true;

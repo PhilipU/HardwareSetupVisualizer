@@ -7,6 +7,7 @@
             "color": "#34495e",
             "description": "Power Supply Unit",
             "svg": "svg/power-supply.svg",
+            "categories": ["measurement"],
             "connectionPoints": [
                 { "x": 60, "y": 90, "side": "bottom", "type": "power", "name": "DC Out" }
             ]
@@ -18,6 +19,7 @@
             "color": "#2ecc71",
             "description": "Oscilloscope Measurement Device",
             "svg": "svg/oscilloscope.svg",
+            "categories": ["measurement"],
             "connectionPoints": [
                 { "x": 0, "y": 30, "side": "left", "type": "input", "name": "CH1" },
                 { "x": 0, "y": 60, "side": "left", "type": "input", "name": "CH2" }
@@ -30,6 +32,7 @@
             "color": "#e74c3c",
             "description": "Digital Multimeter",
             "svg": "svg/multimeter.svg",
+            "categories": ["measurement"],
             "connectionPoints": [
                 { "x": 0, "y": 45, "side": "left", "type": "input", "name": "COM" },
                 { "x": 60, "y": 90, "side": "bottom", "type": "input", "name": "V/A" }
@@ -40,8 +43,9 @@
             "name": "FL3X Media 100BASE-T1",
             "icon": "FL3X",
             "color": "#3498db",
-            "description": "FL3X Media 100BASE-T1 Device",
+            "description": "Media converter for 100BASE-TX to 100BASE-T1 Automotive Ethernet",
             "svg": "svg/fl3x-media.svg",
+            "categories": ["automotive"],
             "connectionPoints": [
                 { "x": 0, "y": 45, "side": "left", "type": "data", "name": "T1" },
                 { "x": 120, "y": 45, "side": "right", "type": "data", "name": "TX" },
@@ -50,11 +54,12 @@
         },
         {
             "id": "fl3x_device",
-            "name": "FL3X Device-L² Gen 3",
+            "name": "FL3X Device-L²",
             "icon": "FL3D",
             "color": "#9b59b6",
-            "description": "FL3X Device-L² Gen 3 Vehicle ECU with multiple I/O interfaces",
+            "description": "FL3X Device-L² simulation device",
             "svg": "svg/fl3x-device.svg",
+            "categories": ["automotive"],
             "connectionPoints": [
                 { "x": 0, "y": 20, "side": "left", "type": "power", "name": "PWR" },
                 { "x": 0, "y": 35, "side": "left", "type": "ethernet", "name": "ETH" },

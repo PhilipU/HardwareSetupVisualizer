@@ -1,0 +1,25 @@
+{
+    "categories": [
+        {
+            "id": "all",
+            "name": "All Components",
+            "description": "Show all available components",
+            "icon": "📦",
+            "color": "#6b7280"
+        },
+        {
+            "id": "measurement",
+            "name": "Measurement",
+            "description": "Test and measurement equipment including power supplies, oscilloscopes, and multimeters",
+            "icon": "📊",
+            "color": "#2ecc71"
+        },
+        {
+            "id": "automotive",
+            "name": "Automotive",
+            "description": "Automotive electronics and vehicle communication devices",
+            "icon": "🚗",
+            "color": "#3498db"
+        }
+    ]
+}
