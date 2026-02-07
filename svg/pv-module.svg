@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="60" viewBox="0 0 80 60">
+  <!-- PV Module frame -->
+  <rect x="8" y="8" width="64" height="44" rx="2" 
+        fill="#ffffff" stroke="#4a5568" stroke-width="1.5"/>
+  
+  <!-- Solar cell grid (4x3 grid) -->
+  <rect x="14" y="14" width="12" height="8" rx="0.5" 
+        fill="#1e3a8a" stroke="#1e40af" stroke-width="0.8"/>
+  <rect x="28" y="14" width="12" height="8" rx="0.5" 
+        fill="#1e3a8a" stroke="#1e40af" stroke-width="0.8"/>
+  <rect x="42" y="14" width="12" height="8" rx="0.5" 
+        fill="#1e3a8a" stroke="#1e40af" stroke-width="0.8"/>
+  <rect x="56" y="14" width="12" height="8" rx="0.5" 
+        fill="#1e3a8a" stroke="#1e40af" stroke-width="0.8"/>
+  
+  <rect x="14" y="24" width="12" height="8" rx="0.5" 
+        fill="#1e3a8a" stroke="#1e40af" stroke-width="0.8"/>
+  <rect x="28" y="24" width="12" height="8" rx="0.5" 
+        fill="#1e3a8a" stroke="#1e40af" stroke-width="0.8"/>
+  <rect x="42" y="24" width="12" height="8" rx="0.5" 
+        fill="#1e3a8a" stroke="#1e40af" stroke-width="0.8"/>
+  <rect x="56" y="24" width="12" height="8" rx="0.5" 
+        fill="#1e3a8a" stroke="#1e40af" stroke-width="0.8"/>
+  
+  <rect x="14" y="34" width="12" height="8" rx="0.5" 
+        fill="#1e3a8a" stroke="#1e40af" stroke-width="0.8"/>
+  <rect x="28" y="34" width="12" height="8" rx="0.5" 
+        fill="#1e3a8a" stroke="#1e40af" stroke-width="0.8"/>
+  <rect x="42" y="34" width="12" height="8" rx="0.5" 
+        fill="#1e3a8a" stroke="#1e40af" stroke-width="0.8"/>
+  <rect x="56" y="34" width="12" height="8" rx="0.5" 
+        fill="#1e3a8a" stroke="#1e40af" stroke-width="0.8"/>
+  
+  <!-- Connection lines from cells -->
+  <line x1="20" y1="42" x2="20" y2="46" stroke="#6b7280" stroke-width="1"/>
+  <line x1="60" y1="42" x2="60" y2="46" stroke="#6b7280" stroke-width="1"/>
+  
+  <!-- Junction box -->
+  <rect x="32" y="46" width="16" height="5" rx="1" 
+        fill="#e5e7eb" stroke="#6b7280" stroke-width="1"/>
+</svg>
