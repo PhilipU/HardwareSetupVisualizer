@@ -30,6 +30,11 @@
             "label": "Start Web Server",
             "task": "Start Web Server",
             "color": "default"
+        },
+        {
+            "label": "Open Browser",
+            "task": "Open Browser",
+            "color": "default"
         }
     ]
 }
