@@ -71,6 +71,40 @@
                 { "x": 120, "y": 51, "side": "right", "type": "data", "name": "CON4" },
                 { "x": 120, "y": 63, "side": "right", "type": "data", "name": "CON5" }
             ]
+        },
+        {
+            "id": "pv_module",
+            "name": "PV Module",
+            "icon": "PV",
+            "color": "#f39c12",
+            "description": "Solar Photovoltaic Module",
+            "svg": "svg/pv-module.svg",
+            "categories": ["solar"],
+            "connectionPoints": [
+                { "x": 60, "y": 90, "side": "bottom", "type": "solar", "name": "+" },
+                { "x": 20, "y": 90, "side": "bottom", "type": "solar", "name": "-" }
+            ]
+        },
+        {
+            "id": "anker_solix_3_pro",
+            "name": "Anker Solix 3 Pro",
+            "icon": "SOLIX",
+            "color": "#27ae60",
+            "description": "Anker Solix 3 Pro Solar Inverter System",
+            "svg": "svg/anker-solix-3-pro.svg",
+            "categories": ["solar"],
+            "connectionPoints": [
+                { "x": 15, "y": 0, "side": "top", "type": "solar", "name": "PV1+" },
+                { "x": 25, "y": 0, "side": "top", "type": "solar", "name": "PV1-" },
+                { "x": 35, "y": 0, "side": "top", "type": "solar", "name": "PV2+" },
+                { "x": 45, "y": 0, "side": "top", "type": "solar", "name": "PV2-" },
+                { "x": 55, "y": 0, "side": "top", "type": "solar", "name": "PV3+" },
+                { "x": 65, "y": 0, "side": "top", "type": "solar", "name": "PV3-" },
+                { "x": 75, "y": 0, "side": "top", "type": "solar", "name": "PV4+" },
+                { "x": 85, "y": 0, "side": "top", "type": "solar", "name": "PV4-" },
+                { "x": 0, "y": 40, "side": "left", "type": "power", "name": "Grid" },
+                { "x": 100, "y": 40, "side": "right", "type": "power", "name": "Emergency" }
+            ]
         }
     ]
 }

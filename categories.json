@@ -20,6 +20,13 @@
             "description": "Automotive electronics and vehicle communication devices",
             "icon": "🚗",
             "color": "#3498db"
+        },
+        {
+            "id": "solar",
+            "name": "Solar Energy",
+            "description": "Solar energy components including PV modules and inverters",
+            "icon": "☀️",
+            "color": "#f39c12"
         }
     ]
 }
