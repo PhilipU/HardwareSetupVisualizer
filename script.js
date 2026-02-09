@@ -586,11 +586,17 @@ class HardwareSetupVisualizer {
                     // Toggle selection
                     const index = this.selectedComponents.indexOf(component);
                     if (index > -1) {
+                        // Removing component from selection
                         this.selectedComponents.splice(index, 1);
+                        // Update selectedComponent to the last remaining, or null if none
+                        this.selectedComponent = this.selectedComponents.length > 0 ? 
+                            this.selectedComponents[this.selectedComponents.length - 1] : null;
                     } else {
+                        // Adding component to selection
                         this.selectedComponents.push(component);
+                        // Make the newly added component the primary selection
+                        this.selectedComponent = component;
                     }
-                    this.selectedComponent = this.selectedComponents.length > 0 ? this.selectedComponents[0] : null;
                 } else {
                     // Check if clicking on already selected component in multi-select
                     if (this.selectedComponents.includes(component)) {
@@ -652,17 +658,36 @@ class HardwareSetupVisualizer {
             const newY = y - this.dragOffset.y;
             
             // Calculate delta movement
-            const deltaX = newX - this.selectedComponent.x;
-            const deltaY = newY - this.selectedComponent.y;
+            let deltaX = newX - this.selectedComponent.x;
+            let deltaY = newY - this.selectedComponent.y;
             
-            // Move all selected components together
+            // Calculate boundary constraints for the entire group
+            let maxDeltaX = deltaX;
+            let maxDeltaY = deltaY;
+            
             this.selectedComponents.forEach(comp => {
-                comp.x += deltaX;
-                comp.y += deltaY;
+                const newCompX = comp.x + deltaX;
+                const newCompY = comp.y + deltaY;
                 
-                // Keep component within canvas bounds using logical dimensions
-                comp.x = Math.max(0, Math.min(this.logicalWidth - comp.width, comp.x));
-                comp.y = Math.max(0, Math.min(this.logicalHeight - comp.height, comp.y));
+                // Check left/right bounds
+                if (newCompX < 0) {
+                    maxDeltaX = Math.max(maxDeltaX, -comp.x);
+                } else if (newCompX + comp.width > this.logicalWidth) {
+                    maxDeltaX = Math.min(maxDeltaX, this.logicalWidth - comp.width - comp.x);
+                }
+                
+                // Check top/bottom bounds
+                if (newCompY < 0) {
+                    maxDeltaY = Math.max(maxDeltaY, -comp.y);
+                } else if (newCompY + comp.height > this.logicalHeight) {
+                    maxDeltaY = Math.min(maxDeltaY, this.logicalHeight - comp.height - comp.y);
+                }
+            });
+            
+            // Apply constrained movement to all selected components
+            this.selectedComponents.forEach(comp => {
+                comp.x += maxDeltaX;
+                comp.y += maxDeltaY;
             });
             
             this.renderCanvas();
@@ -822,10 +847,13 @@ class HardwareSetupVisualizer {
                     if (index > -1) {
                         // Component already selected, remove it
                         this.selectedComponents.splice(index, 1);
-                        this.selectedComponent = this.selectedComponents.length > 0 ? this.selectedComponents[0] : null;
+                        // Update selectedComponent to the last remaining, or null if none
+                        this.selectedComponent = this.selectedComponents.length > 0 ? 
+                            this.selectedComponents[this.selectedComponents.length - 1] : null;
                     } else {
                         // Add to selection
                         this.selectedComponents.push(component);
+                        // Make the newly added component the primary selection
                         this.selectedComponent = component;
                     }
                     
@@ -1719,5 +1747,5 @@ class HardwareSetupVisualizer {
 
 // Initialize the application when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    window.visualizer = new HardwareSetupVisualizer();
+    new HardwareSetupVisualizer();
 });
