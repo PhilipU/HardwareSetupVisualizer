@@ -5,6 +5,7 @@ class HardwareSetupVisualizer {
         this.components = [];
         this.wires = [];
         this.selectedComponent = null;
+        this.selectedComponents = []; // Array for multi-select
         this.selectedWire = null;
         this.isDragging = false;
         this.isDrawingWire = false;
@@ -350,8 +351,18 @@ class HardwareSetupVisualizer {
 
         // Keyboard events
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Delete' && this.selectedComponent) {
-                this.deleteComponent(this.selectedComponent);
+            if (e.key === 'Delete') {
+                if (this.selectedComponents.length > 0) {
+                    // Delete all selected components
+                    const componentsToDelete = [...this.selectedComponents];
+                    componentsToDelete.forEach(comp => {
+                        this.deleteComponent(comp);
+                    });
+                    this.selectedComponents = [];
+                    this.selectedComponent = null;
+                } else if (this.selectedComponent) {
+                    this.deleteComponent(this.selectedComponent);
+                }
             }
         });
         
@@ -377,7 +388,13 @@ class HardwareSetupVisualizer {
         
         // Mirror component functionality
         document.getElementById('mirrorComponent').addEventListener('click', () => {
-            if (this.selectedForMenu) {
+            if (this.selectedComponents.length > 0) {
+                // Apply mirror to all selected components
+                this.selectedComponents.forEach(comp => {
+                    this.mirrorComponent(comp);
+                });
+                this.hideContextMenu();
+            } else if (this.selectedForMenu) {
                 this.mirrorComponent(this.selectedForMenu);
                 this.hideContextMenu();
             }
@@ -385,7 +402,16 @@ class HardwareSetupVisualizer {
 
         // Delete component functionality
         document.getElementById('deleteComponent').addEventListener('click', () => {
-            if (this.selectedForMenu) {
+            if (this.selectedComponents.length > 0) {
+                // Delete all selected components
+                const componentsToDelete = [...this.selectedComponents];
+                componentsToDelete.forEach(comp => {
+                    this.deleteComponent(comp);
+                });
+                this.selectedComponents = [];
+                this.selectedComponent = null;
+                this.hideContextMenu();
+            } else if (this.selectedForMenu) {
                 this.deleteComponent(this.selectedForMenu);
                 this.hideContextMenu();
             }
@@ -432,6 +458,14 @@ class HardwareSetupVisualizer {
         this.contextMenu.style.display = 'block';
         this.contextMenu.style.left = (x + 10) + 'px';
         this.contextMenu.style.top = (y - 20) + 'px';
+        
+        // Update menu labels to reflect multi-select
+        const count = this.selectedComponents.length;
+        const mirrorText = count > 1 ? `🔄 Mirror (${count})` : '🔄 Mirror';
+        const deleteText = count > 1 ? `🗑️ Delete (${count})` : '🗑️ Delete';
+        
+        document.getElementById('mirrorComponent').querySelector('span').textContent = mirrorText;
+        document.getElementById('deleteComponent').querySelector('span').textContent = deleteText;
     }
     
     hideContextMenu() {
@@ -468,6 +502,7 @@ class HardwareSetupVisualizer {
         if (this.selectedComponent && this.selectedComponent.type.id === typeId) {
             this.selectedComponent = null;
         }
+        this.selectedComponents = this.selectedComponents.filter(comp => comp.type.id !== typeId);
         
         this.renderCanvas();
     }
@@ -546,13 +581,34 @@ class HardwareSetupVisualizer {
             // Then check for components (dragging)
             const component = this.getComponentAt(x, y);
             if (component) {
-                this.selectedComponent = component;
+                // Ctrl+Click for multi-select
+                if (e.ctrlKey || e.metaKey) {
+                    // Toggle selection
+                    const index = this.selectedComponents.indexOf(component);
+                    if (index > -1) {
+                        this.selectedComponents.splice(index, 1);
+                    } else {
+                        this.selectedComponents.push(component);
+                    }
+                    this.selectedComponent = this.selectedComponents.length > 0 ? this.selectedComponents[0] : null;
+                } else {
+                    // Check if clicking on already selected component in multi-select
+                    if (this.selectedComponents.includes(component)) {
+                        // Keep multi-selection and prepare for group drag
+                        this.selectedComponent = component;
+                    } else {
+                        // Single select
+                        this.selectedComponent = component;
+                        this.selectedComponents = [component];
+                    }
+                }
                 this.isDragging = true;
                 this.dragOffset = { x: x - component.x, y: y - component.y };
                 this.canvas.style.cursor = 'grabbing';
             } else {
                 // Start canvas panning
                 this.selectedComponent = null;
+                this.selectedComponents = [];
                 this.isPanning = true;
                 const rect = this.canvas.getBoundingClientRect();
                 this.lastPanPoint = {
@@ -592,12 +648,22 @@ class HardwareSetupVisualizer {
 
         // Handle component dragging
         if (this.isDragging && this.selectedComponent) {
-            this.selectedComponent.x = x - this.dragOffset.x;
-            this.selectedComponent.y = y - this.dragOffset.y;
+            const newX = x - this.dragOffset.x;
+            const newY = y - this.dragOffset.y;
             
-            // Keep component within canvas bounds using logical dimensions
-            this.selectedComponent.x = Math.max(0, Math.min(this.logicalWidth - this.selectedComponent.width, this.selectedComponent.x));
-            this.selectedComponent.y = Math.max(0, Math.min(this.logicalHeight - this.selectedComponent.height, this.selectedComponent.y));
+            // Calculate delta movement
+            const deltaX = newX - this.selectedComponent.x;
+            const deltaY = newY - this.selectedComponent.y;
+            
+            // Move all selected components together
+            this.selectedComponents.forEach(comp => {
+                comp.x += deltaX;
+                comp.y += deltaY;
+                
+                // Keep component within canvas bounds using logical dimensions
+                comp.x = Math.max(0, Math.min(this.logicalWidth - comp.width, comp.x));
+                comp.y = Math.max(0, Math.min(this.logicalHeight - comp.height, comp.y));
+            });
             
             this.renderCanvas();
         }
@@ -689,6 +755,11 @@ class HardwareSetupVisualizer {
             const component = this.getComponentAt(x, y);
             if (component) {
                 e.preventDefault();
+                // If component is not already in selection, add it to selection
+                if (!this.selectedComponents.includes(component)) {
+                    this.selectedComponents = [component];
+                    this.selectedComponent = component;
+                }
                 const rect = this.canvas.getBoundingClientRect();
                 const menuX = e.clientX - rect.left;
                 const menuY = e.clientY - rect.top;
@@ -740,15 +811,33 @@ class HardwareSetupVisualizer {
             // If touching a component, start long press timer
             if (component) {
                 this.longPressTimer = setTimeout(() => {
-                    // Long press detected - show context menu
+                    // Long press detected - toggle multi-select or show context menu
                     this.longPressTriggered = true;
                     // Cancel any ongoing drag
                     this.isDragging = false;
                     this.isPanning = false;
-                    const rect = this.canvas.getBoundingClientRect();
-                    const menuX = touch.clientX - rect.left;
-                    const menuY = touch.clientY - rect.top;
-                    this.showContextMenu(component, menuX, menuY);
+                    
+                    // Toggle selection for multi-select
+                    const index = this.selectedComponents.indexOf(component);
+                    if (index > -1) {
+                        // Component already selected, remove it
+                        this.selectedComponents.splice(index, 1);
+                        this.selectedComponent = this.selectedComponents.length > 0 ? this.selectedComponents[0] : null;
+                    } else {
+                        // Add to selection
+                        this.selectedComponents.push(component);
+                        this.selectedComponent = component;
+                    }
+                    
+                    // Show context menu if there are selected components
+                    if (this.selectedComponents.length > 0) {
+                        const rect = this.canvas.getBoundingClientRect();
+                        const menuX = touch.clientX - rect.left;
+                        const menuY = touch.clientY - rect.top;
+                        this.showContextMenu(component, menuX, menuY);
+                    }
+                    
+                    this.renderCanvas();
                 }, 500); // 500ms for long press
             }
 
@@ -953,6 +1042,11 @@ class HardwareSetupVisualizer {
         if (index > -1) {
             this.components.splice(index, 1);
             this.selectedComponent = null;
+            // Also remove from multi-select
+            const selectIndex = this.selectedComponents.indexOf(component);
+            if (selectIndex > -1) {
+                this.selectedComponents.splice(selectIndex, 1);
+            }
             this.renderCanvas();
         }
     }
@@ -1341,8 +1435,8 @@ class HardwareSetupVisualizer {
     }
 
     drawComponent(component) {
-        // Highlight selected component
-        const isSelected = this.selectedComponent === component;
+        // Highlight selected components
+        const isSelected = this.selectedComponents.includes(component);
         
         if (isSelected) {
             // Draw highlight border
@@ -1515,6 +1609,7 @@ class HardwareSetupVisualizer {
             this.components = [];
             this.wires = [];
             this.selectedComponent = null;
+            this.selectedComponents = [];
             this.selectedWire = null;
             this.renderCanvas();
         }
@@ -1624,5 +1719,5 @@ class HardwareSetupVisualizer {
 
 // Initialize the application when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    new HardwareSetupVisualizer();
+    window.visualizer = new HardwareSetupVisualizer();
 });
